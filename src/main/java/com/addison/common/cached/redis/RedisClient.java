@@ -28,7 +28,7 @@ public class RedisClient {
  public RedisClient(final Config poolConfig, final String wAddresses,final String rAddresses,String serializer) {
 		 
 	      if(wAddresses==null||rAddresses==null){
-	    	  throw new RuntimeException("elong-redis缺少初始化参数");  
+	    	  throw new RuntimeException("addison-redis缺少初始化参数");
 	       }
 	 
 		 String[] wAddressArray =wAddresses.split(",");
@@ -40,12 +40,12 @@ public class RedisClient {
 				String port=singleArray[1];
 				JedisPool pool = new JedisPool(poolConfig, ip,
 						Integer.valueOf(port));
-				AddisonJedisPool elongJedisPool = new AddisonJedisPool();
-				elongJedisPool.setJedisPoll(pool);
-				elongJedisPool.setQuality(1);
-				elongJedisPool.setIp(ip);
-				elongJedisPool.setPort(Integer.valueOf(port));
-				wPoolList.add(elongJedisPool);
+				AddisonJedisPool addisonJedisPool = new AddisonJedisPool();
+				addisonJedisPool.setJedisPoll(pool);
+				addisonJedisPool.setQuality(1);
+				addisonJedisPool.setIp(ip);
+				addisonJedisPool.setPort(Integer.valueOf(port));
+				wPoolList.add(addisonJedisPool);
 			}
 			 
 		 }
@@ -57,12 +57,12 @@ public class RedisClient {
 					String port=singleArray[1];
 					JedisPool pool = new JedisPool(poolConfig, ip,
 							Integer.valueOf(port));
-					AddisonJedisPool elongJedisPool = new AddisonJedisPool();
-					elongJedisPool.setJedisPoll(pool);
-					elongJedisPool.setQuality(1);
-					elongJedisPool.setIp(ip);
-					elongJedisPool.setPort(Integer.valueOf(port));
-					rPoolList.add(elongJedisPool);
+					AddisonJedisPool addisonJedisPool = new AddisonJedisPool();
+					addisonJedisPool.setJedisPoll(pool);
+					addisonJedisPool.setQuality(1);
+					addisonJedisPool.setIp(ip);
+					addisonJedisPool.setPort(Integer.valueOf(port));
+					rPoolList.add(addisonJedisPool);
 				}
 			 }
 		 
@@ -79,13 +79,13 @@ public class RedisClient {
 	}else if(serializer.equals("java")){
 		this.serializer= new JavaSerialize();
 	}else{
-		throw new RuntimeException("elong-redis不支持的序列化协议");
+		throw new RuntimeException("addison-redis不支持的序列化协议");
 	}
-		log.info("elong-redis初始化"+wPoolSize+"个写库，"+rPoolSize+"个读库，序列化协议为："+serializer);	 
+		log.info("addison-redis初始化"+wPoolSize+"个写库，"+rPoolSize+"个读库，序列化协议为："+serializer);
 		 
 	}
 
-public AddisonJedisPool getElongJedisPool(String key){
+public AddisonJedisPool getJedisPool(String key){
 	AddisonJedisPool jedisPool=null;
 	int index=0;
 	if(rPoolSize==1){
@@ -180,7 +180,7 @@ public AddisonJedisPool getElongJedisPool(String key){
 	}
 	
 	public String  get(String key){
-		AddisonJedisPool pool= getElongJedisPool(key);
+		AddisonJedisPool pool= getJedisPool(key);
 		JedisPool jedisPool=pool.getJedisPoll();
 		String value=null;
 		Jedis jedis=jedisPool.getResource();
@@ -195,7 +195,7 @@ public AddisonJedisPool getElongJedisPool(String key){
 		return value;
 	}
 	public Object  getObj(String key){
-		AddisonJedisPool pool= getElongJedisPool(key);
+		AddisonJedisPool pool= getJedisPool(key);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		byte[] value=null;
@@ -247,13 +247,11 @@ public AddisonJedisPool getElongJedisPool(String key){
 		}
 		
 	}
+
 	/**
-	 * 
 	 * 删除set元素
-	 * @param   name
-	 * @param  @return    设定文件
-	 * @return String    DOM对象
-	 * @Exception 异常对象
+	 * @param key
+	 * @param members
 	 */
 	public void  srem(String key,String...members ){
 		
@@ -274,17 +272,14 @@ public AddisonJedisPool getElongJedisPool(String key){
 		
 		
 	}
-	
+
 	/**
-	 * 
 	 * sdiff(返回所有给定 key 与第一个 key 的差集)
-	 * @param   name
-	 * @param  @return    设定文件
-	 * @return String    DOM对象
-	 * @since   
+	 * @param keys
+	 * @return
 	 */
 	public Set<String>  sdiff(String... keys ){
-		AddisonJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		Set<String> set=null;
@@ -303,7 +298,7 @@ public AddisonJedisPool getElongJedisPool(String key){
 	 * 
 	 */
 	public Set<String>  sinter(String... keys ){
-		AddisonJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		Set<String> set=null;
@@ -323,7 +318,7 @@ public AddisonJedisPool getElongJedisPool(String key){
 	 * 
 	 */
 	public Set<String>  sunion(String... keys ){
-		AddisonJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		Set<String> set=null;
@@ -338,7 +333,7 @@ public AddisonJedisPool getElongJedisPool(String key){
 	}
 	
 	public void  sunionstore(String dstkey,String... keys ){
-		AddisonJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		try {
@@ -353,7 +348,7 @@ public AddisonJedisPool getElongJedisPool(String key){
 	
 	
 	public Set<String>  keys(String pattern ){
-		AddisonJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		Set<String> result=null;
@@ -368,7 +363,7 @@ public AddisonJedisPool getElongJedisPool(String key){
 	}
 	
 	public boolean  exists(String key ){
-		AddisonJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		boolean result=false;
@@ -476,7 +471,7 @@ public AddisonJedisPool getElongJedisPool(String key){
 		return result;
 	}
 	public Set<String> smembers(String key){
-		AddisonJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		Set<String> result=null;
@@ -492,7 +487,7 @@ public AddisonJedisPool getElongJedisPool(String key){
 		return result;
 	}
 	public boolean sismember(String key,String value){
-		AddisonJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		boolean result=false;
@@ -634,7 +629,7 @@ public AddisonJedisPool getElongJedisPool(String key){
 	
 	
 	public long  llen(String key){
-		AddisonJedisPool pool= getElongJedisPool(key);
+		AddisonJedisPool pool= getJedisPool(key);
 		JedisPool jedisPool=pool.getJedisPoll();
 		long value=0;
 		Jedis jedis=jedisPool.getResource();

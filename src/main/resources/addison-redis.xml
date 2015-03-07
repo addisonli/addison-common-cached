@@ -14,8 +14,11 @@
 	
 	<bean id="redisClient" class="com.addison.common.cached.redis.RedisClient">
 		<constructor-arg index="0" ref="jedisPoolConfig" />
+		<!--地址为IP:redis端口号,多个采用逗号进行分割 192.168.14.238:6379,192.168.14.239:6379-->
 		<constructor-arg index="1" value="${redis.wAddress}" />
 		<constructor-arg index="2" value="${redis.rAddress}" />
+
+		<!--  redis.serializer=hessian  配置文件里配置，目前可配置为hessian，hessian2，java-->
 		<constructor-arg index="3" value="${redis.serializer}">
 		</constructor-arg>
 	</bean>
