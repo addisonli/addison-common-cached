@@ -19,8 +19,8 @@ import com.addison.common.cached.serializer.JavaSerialize;
 
 public class RedisClient {
 	private static Log log =LogFactory.getLog(RedisClient.class);
-	private List<ElongJedisPool> wPoolList = new ArrayList<ElongJedisPool>();
-	private List<ElongJedisPool> rPoolList = new ArrayList<ElongJedisPool>();
+	private List<AddisonJedisPool> wPoolList = new ArrayList<AddisonJedisPool>();
+	private List<AddisonJedisPool> rPoolList = new ArrayList<AddisonJedisPool>();
 	private ByteSerializer serializer;
 	private int rPoolSize=0;
 	private int wPoolSize=0;
@@ -40,7 +40,7 @@ public class RedisClient {
 				String port=singleArray[1];
 				JedisPool pool = new JedisPool(poolConfig, ip,
 						Integer.valueOf(port));
-				ElongJedisPool elongJedisPool = new ElongJedisPool();
+				AddisonJedisPool elongJedisPool = new AddisonJedisPool();
 				elongJedisPool.setJedisPoll(pool);
 				elongJedisPool.setQuality(1);
 				elongJedisPool.setIp(ip);
@@ -57,7 +57,7 @@ public class RedisClient {
 					String port=singleArray[1];
 					JedisPool pool = new JedisPool(poolConfig, ip,
 							Integer.valueOf(port));
-					ElongJedisPool elongJedisPool = new ElongJedisPool();
+					AddisonJedisPool elongJedisPool = new AddisonJedisPool();
 					elongJedisPool.setJedisPoll(pool);
 					elongJedisPool.setQuality(1);
 					elongJedisPool.setIp(ip);
@@ -85,8 +85,8 @@ public class RedisClient {
 		 
 	}
 
-public  ElongJedisPool getElongJedisPool(String key){
-	ElongJedisPool jedisPool=null;
+public AddisonJedisPool getElongJedisPool(String key){
+	AddisonJedisPool jedisPool=null;
 	int index=0;
 	if(rPoolSize==1){
 		index=0;
@@ -102,7 +102,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 
 	public String set(String key,String value){
 		String str= null;
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -122,7 +122,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	
 	public String setex(String key,String value,int seconds){
 		String str= null;
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -142,7 +142,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	public String setObj(String key,Object value){
 		String str=null;
 		byte[] data =serializer.serialize(value);
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -162,7 +162,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	public String setexObj(String key,Object value,int seconds){
 		String str=null;
 		byte[] data =serializer.serialize(value);
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -180,7 +180,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	}
 	
 	public String  get(String key){
-		ElongJedisPool pool= getElongJedisPool(key);
+		AddisonJedisPool pool= getElongJedisPool(key);
 		JedisPool jedisPool=pool.getJedisPoll();
 		String value=null;
 		Jedis jedis=jedisPool.getResource();
@@ -195,7 +195,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 		return value;
 	}
 	public Object  getObj(String key){
-		ElongJedisPool pool= getElongJedisPool(key);
+		AddisonJedisPool pool= getElongJedisPool(key);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		byte[] value=null;
@@ -214,7 +214,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	}
 	
 	public void  del(String... keys){
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -231,7 +231,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	}
 	public void  sadd(String key,String...members ){
 		
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -257,7 +257,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	 */
 	public void  srem(String key,String...members ){
 		
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -284,7 +284,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	 * @since   
 	 */
 	public Set<String>  sdiff(String... keys ){
-		ElongJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getElongJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		Set<String> set=null;
@@ -303,7 +303,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	 * 
 	 */
 	public Set<String>  sinter(String... keys ){
-		ElongJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getElongJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		Set<String> set=null;
@@ -323,7 +323,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	 * 
 	 */
 	public Set<String>  sunion(String... keys ){
-		ElongJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getElongJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		Set<String> set=null;
@@ -338,7 +338,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	}
 	
 	public void  sunionstore(String dstkey,String... keys ){
-		ElongJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getElongJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		try {
@@ -353,7 +353,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	
 	
 	public Set<String>  keys(String pattern ){
-		ElongJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getElongJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		Set<String> result=null;
@@ -368,7 +368,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	}
 	
 	public boolean  exists(String key ){
-		ElongJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getElongJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		boolean result=false;
@@ -382,7 +382,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 		return result;
 	}
 	public void  del(String key ){
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -400,7 +400,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 		
 	}
 	public void  expire(String key,int seconds){
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -420,7 +420,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	
 	
 	public void  rename(String oldkey,String newkey){
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -439,7 +439,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	
 	public Long incr(String key){
 		Long result =0l;
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -459,7 +459,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	public Long incrBy(String key,Integer value){
 		
 		Long result =0l;
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -476,7 +476,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 		return result;
 	}
 	public Set<String> smembers(String key){
-		ElongJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getElongJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		Set<String> result=null;
@@ -492,7 +492,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 		return result;
 	}
 	public boolean sismember(String key,String value){
-		ElongJedisPool pool= getElongJedisPool(null);
+		AddisonJedisPool pool= getElongJedisPool(null);
 		JedisPool jedisPool=pool.getJedisPoll();
 		Jedis jedis=	jedisPool.getResource();
 		boolean result=false;
@@ -510,7 +510,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	
 	public void sremAll(String key){
 		
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -533,7 +533,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	
 	public String lpop(String key){
 		String str= null;
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -553,7 +553,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	
 	public String rpop(String key){
 		String str= null;
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -573,7 +573,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	
 	public List<String> lrange(String key,int start,int end){
 		List<String> strList= null;
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -594,7 +594,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	
 	public long rpush(String key,String value){
 		long result= 0;
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -614,7 +614,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	
 	public long lpush(String key,String value){
 		long result= 0;
-		for(ElongJedisPool pool:wPoolList){
+		for(AddisonJedisPool pool:wPoolList){
 			JedisPool jedisPool =pool.getJedisPoll();
 			Jedis jedis=jedisPool.getResource();
 			try {
@@ -634,7 +634,7 @@ public  ElongJedisPool getElongJedisPool(String key){
 	
 	
 	public long  llen(String key){
-		ElongJedisPool pool= getElongJedisPool(key);
+		AddisonJedisPool pool= getElongJedisPool(key);
 		JedisPool jedisPool=pool.getJedisPoll();
 		long value=0;
 		Jedis jedis=jedisPool.getResource();

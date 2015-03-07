@@ -14,7 +14,7 @@ import redis.clients.jedis.JedisPool;
  * @version V1.0
  */
 
-public class ElongJedisPool {
+public class AddisonJedisPool {
 	
 	private JedisPool jedisPoll;
 	private int quality;
