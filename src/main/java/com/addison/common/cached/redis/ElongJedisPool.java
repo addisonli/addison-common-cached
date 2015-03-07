@@ -16,7 +16,7 @@ import redis.clients.jedis.JedisPool;
 
 public class ElongJedisPool {
 	
-	private JedisPool jedisPoll;
+	private JedisPool jedisPoll;//
 	private int quality;
 	private String ip;
 	private Integer port;
